@@ -1,0 +1,35 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "exports": "src/index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "nodemon babel-node src/index.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "apollo-server": "^2.12.0",
+    "apollo-server-express": "^2.13.0",
+    "babel-cli": "^6.26.0",
+    "babel-node": "^0.0.1-security",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-watch": "^7.0.0",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^15.0.0",
+    "graphql-redis-subscriptions": "^2.2.1",
+    "http": "^0.0.1-security",
+    "ioredis": "^4.16.3",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.3"
+  }
+}
