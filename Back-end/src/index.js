@@ -1,15 +1,15 @@
-// const { ApolloServer, gql, withFilter, PubSub } = require('apollo-server');
-const { ApolloServer, gql, withFilter } = require("apollo-server-express");
-const { RedisPubSub } = require('graphql-redis-subscriptions');
-const express = require('express')
-const Redis = require('ioredis')
-const http = require('http')
-const path = "/demo";
+// const path = require('path');
+// require('dotenv').config({ path: path.join(__dirname, '.env') });
+import { ApolloServer, gql, withFilter } from 'apollo-server-express';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+import Redis from "ioredis";
+import http from 'http';
+import express from 'express';
+const pathGraphql = "/demo";
 const PORT = 4000
-
 const options = {
-    host: '192.168.1.202',
-    port: '7379',
+    host: 'localhost',
+    port: '6379',
     retryStrategy: times => {
         // reconnect after
         return Math.min(times * 50, 2000);
@@ -51,6 +51,7 @@ type Book {
     addBook(title: String, author: String!): [Book]
     updateBook(id:Int,title:String,author:String):[Book],
     deleteBook(id:Int):[Book]
+    actionPm2(name:String,action:String):String
  
   }
   type Subscription {
@@ -91,7 +92,6 @@ const resolvers = {
     },
     Mutation: {
         addBook: (_, args, { pubsub }) => {
-
             let isSameKey = true
             let key = null;
             do {
@@ -106,6 +106,7 @@ const resolvers = {
             pubsub.publish(NEW_BOOK, {
                 autoAddBook: books
             })
+            console.table(books)
             return books
         },
         updateBook: (_, args) => {
@@ -118,6 +119,7 @@ const resolvers = {
             pubsub.publish(UPDATE_BOOK, {
                 autoUpdateBook: result[0]
             })
+            console.table(books)
             return books
         },
         deleteBook: (_, args, { pubsub }) => {
@@ -128,7 +130,13 @@ const resolvers = {
                 realtimeRemove: result
             })
             return result
-        }
+        },
+        actionPm2: (_, args, { pubsub }) => {
+            const { action, name } = args
+            // run()
+            // getProcessSetting(name)
+            return 'Susccess !'
+        },
     },
     Subscription: {
         autoAddBook: {
@@ -164,11 +172,11 @@ const server = new ApolloServer({
     resolvers,
     context: (req, res) => ({ req, res, pubsub }),
     subscriptions: {
-        path
+        path: pathGraphql
     }
 });
 let app = express();
-server.applyMiddleware({ app, path });
+server.applyMiddleware({ app, path: pathGraphql });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 // The `listen` method launches a web server.

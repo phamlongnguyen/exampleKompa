@@ -119,9 +119,10 @@ function Demo(props) {
             document: SUBSCRIPTIONS_ADD_BOOK,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-
-                setListBooks(subscriptionData.data.autoAddBook)
                 setBook(null)
+                return {
+                    getBooks: subscriptionData.data.autoAddBook
+                }
             }
         })
 
@@ -129,9 +130,10 @@ function Demo(props) {
             document: SUBSCRIPTIONS_REMOVE_BOOK,
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                console.log('Update book realtime', subscriptionData.data.realtimeRemove);
-                setListBooks(subscriptionData.data.realtimeRemove)
                 setBook(null)
+                return {
+                    getBooks: subscriptionData.data.realtimeRemove
+                }
             }
         })
         /*eslint-disable */
@@ -195,16 +197,14 @@ function Demo(props) {
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
                 let dataReceived = subscriptionData.data.autoUpdateBook
-                console.log('prev', prev);
-                let tempListBooks = listBooks.map(e => {
+                let tempListBooks = prev.map(e => {
                     if (e.id === dataReceived.id) {
                         e.author = dataReceived.author;
                         e.title = dataReceived.title;
                     }
                     return e
                 })
-                console.log('Action Update', tempListBooks);
-                setListBooks(tempListBooks)
+                return tempListBooks
             }
         })
     }
